@@ -1,0 +1,83 @@
+<!DOCTYPEhtml>
+<html lang="en">
+<head>
+    <title>Practice Poke dex</title>
+
+</head> 
+<body> 
+<h1>Practice PokeDEX !!</h1>
+<h2>Pick your Pokemon Friend</h2>
+<input type="number" id="pokeId" min="1" max = "151">
+  <button id="searchButton">search for Pokemon</button>
+
+  <h1 id="pokeName"></h1>
+<div id ="spritesContainer"><!-- This willl store the pokemon images inside of it --></div>
+<ul id ="typesList"><!--This unordered list will store pokemon types inside of it --></ul>
+<ul id ="movesList"><!--This unordered list will store the pokemon moves inside of it --></ul>
+</body>  
+  <script>
+
+    const pokeHeader = document.getElementById("pokeName");
+    const spritesContainer = document.getElementById("spritesContainer");
+    const typesList = document.getElementById("typesList");
+    const movesList = document.getElementById("movesList");
+    const pokeId = document.getElementById("pokeId");
+    const searchButton = document.getElementById("searchButton");
+  
+    async function getPokemonInfo(){
+   let httpResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeId.value}`);
+    console.log(httpResponse);
+  
+  if(httpResponse.status === 200){
+    pokeHeader.textContent = "";
+    spritesContainer.innerHTML = "";
+    typesList.innerHTML = "";
+    movesList.innerHTML = "";
+
+    let responseBody = await httpResponse.json()
+      console.log(responseBody);
+
+pokeHeader.textContent = responseBody.name;
+
+for(let key in responseBody.sprites){
+
+    if(responseBody.sprites[key] && key != "other" && key != "versions"){
+
+        let img = document.createElement("img");
+        img.src = responseBody.sprites[key];
+        img.alt = "img not found";
+        spritesContainer.appendChild(img);
+
+    }
+for(let object of responseBody.types){
+
+    let li = document.createElement("li");
+    li.textContent = object.type.name;
+    typesList.appendChild(li);
+
+}
+for(let object of responseBody.moves){
+    console.log(object.move.name);
+    let li = document.createElement("li");
+    li.textContent = object.move.name;
+    movesList.appendChild(li);
+}
+
+}
+
+  } else{
+    console.log("It got away!!");
+  }
+  }
+    
+    
+  searchButton.addEventListener("click", getPokemonInfo);
+  
+  
+  
+  
+
+  
+  </script>
+</html>
+
